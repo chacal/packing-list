@@ -1,5 +1,6 @@
 import { Navigate, NavLink, Route, Routes } from 'react-router'
 import { InventoryPage } from './pages/inventory/InventoryPage.tsx'
+import { PackingPage } from './pages/trips/PackingPage.tsx'
 import { TripEditorPage } from './pages/trips/TripEditorPage.tsx'
 import { TripLayout } from './pages/trips/TripLayout.tsx'
 import { TripSummaryPage } from './pages/trips/TripSummaryPage.tsx'
@@ -34,7 +35,7 @@ export default function App() {
           <Route path="/trips/:id" element={<TripLayout />}>
             <Route index element={<TripEditorPage />} />
             <Route path="summary" element={<TripSummaryPage />} />
-            <Route path="pack" element={<Placeholder title="Packing mode" />} />
+            <Route path="pack" element={<PackingPage />} />
           </Route>
           <Route path="*" element={<Placeholder title="Not found" />} />
         </Routes>
