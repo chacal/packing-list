@@ -1,7 +1,7 @@
 # Packing List
 
 Gear inventory and trip packing lists with weight summaries, replacing a Google Sheet.
-Laptop for editing, phone for packing. See [PLAN.md](PLAN.md) for the design and decisions.
+Laptop for editing, phone for packing.
 
 ## Features
 
@@ -47,5 +47,20 @@ docker run -p 8200:3000 -v /srv/packing-list:/data packing-list
 | `BACKUP_KEEP` | `7` | Snapshots to keep |
 
 The container runs as uid 1000 (`node`), so the mounted directory must be writable by that
-uid. No authentication: meant for a trusted home network. Images are published to
+uid. No authentication: meant for a trusted private network. Images are published to
 `ghcr.io/chacal/packing-list` by GitHub Actions on every push to `main`.
+
+## Design notes
+
+- **Trip lines reference inventory items live.** Fixing a weight in the inventory fixes
+  every trip that carries the item. Deleting an item removes it from trips (the UI says
+  how many before it does).
+- **Packs are their own entity**, optionally linked to the inventory item they are made
+  of so the weight is recorded once. Two bags of the same model or storage that is not
+  gear at all (a bike rack, say) both work.
+- **Weights are integer grams.** Pack totals include the bag's own weight; base weight is
+  the total minus consumables.
+- **Summary math lives in `shared/`** and runs identically on the server and in the
+  browser, so the numbers never disagree.
+- **Storage** is one SQLite file in WAL mode, migrated with plain SQL files. Daily
+  `VACUUM INTO` snapshots give a consistent copy for whatever backs up the data directory.
