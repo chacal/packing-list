@@ -52,22 +52,56 @@ export function TripEditorPage() {
       <aside className="hidden w-80 shrink-0 border-r border-stone-200 bg-white md:block lg:w-96">{picker}</aside>
 
       <section className="flex-1 overflow-y-auto p-4">
-        <div className="mb-3 flex flex-wrap items-center gap-2">
-          <div className="flex flex-wrap items-center gap-1.5 text-sm">
+        <div className="mb-3 flex items-center gap-2">
+          <div className="flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto text-sm whitespace-nowrap md:flex-wrap md:whitespace-normal">
             <span className="text-stone-500">Packs:</span>
             {tripPacks.length === 0 && <span className="text-stone-400">none</span>}
             {tripPacks.map((p) => (
-              <span key={p.id} className="rounded-full bg-stone-100 px-2 py-0.5 text-stone-700">{p.name}</span>
+              <span key={p.id} className="shrink-0 rounded-full bg-stone-100 px-2 py-0.5 text-stone-700">{p.name}</span>
             ))}
-            <Button size="sm" variant="ghost" onClick={() => setPacksOpen(true)}>Edit packs</Button>
+            <Button size="sm" variant="ghost" className="shrink-0" onClick={() => setPacksOpen(true)}>Edit packs</Button>
           </div>
-          <Button className="ml-auto md:hidden" variant="primary" onClick={() => setPickerOpen(true)}>+ Add gear</Button>
+          <Button className="shrink-0 md:hidden" variant="primary" onClick={() => setPickerOpen(true)}>+ Add gear</Button>
         </div>
 
         {trip.lines.length === 0 ? (
           <EmptyState>Nothing on this trip yet. Pick gear from the inventory list{' '}<span className="md:hidden">with “Add gear”</span><span className="hidden md:inline">on the left</span>.</EmptyState>
         ) : (
-          <div className="overflow-hidden rounded-lg border border-stone-200 bg-white">
+          <>
+          {/* Phone: two-row cards */}
+          <div className="space-y-3 md:hidden">
+            {groups.map((g) => {
+              const cat = summary.byCategory.find((c) => c.categoryId === g.category.id)
+              return (
+                <section key={g.category.id} className="overflow-hidden rounded-lg border border-stone-200 bg-white">
+                  <header className="flex items-baseline justify-between bg-stone-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-stone-500">
+                    <span>{g.category.name}</span>
+                    <span className="tabular-nums">{formatWeight(cat?.weightG ?? 0)}</span>
+                  </header>
+                  <ul className="divide-y divide-stone-100">
+                    {g.lines.map((line) => (
+                      <LineCard
+                        key={line.id}
+                        line={line}
+                        item={itemById.get(line.itemId)}
+                        packs={tripPacks}
+                        busy={busy}
+                        onChange={(patch) => update.mutate({ id: trip.id, lineId: line.id, ...patch })}
+                        onRemove={() => remove.mutate({ id: trip.id, lineId: line.id })}
+                      />
+                    ))}
+                  </ul>
+                </section>
+              )
+            })}
+            <div className="flex justify-between rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 text-xs text-stone-600">
+              <span>{summary.itemCount} items · gear {formatWeight(summary.itemsG)} + packs {formatWeight(summary.packsG)}</span>
+              <span className="font-semibold text-stone-900 tabular-nums">{formatWeight(summary.totalG)}</span>
+            </div>
+          </div>
+
+          {/* Desktop: table */}
+          <div className="hidden overflow-hidden rounded-lg border border-stone-200 bg-white md:block">
             <table className="w-full text-sm">
               <thead className="sr-only">
                 <tr><th>Item</th><th>Qty</th><th>Pack</th><th>Weight</th><th></th></tr>
@@ -106,6 +140,7 @@ export function TripEditorPage() {
               </tfoot>
             </table>
           </div>
+          </>
         )}
         <div className="mt-2"><ErrorText error={add.error ?? update.error ?? remove.error} /></div>
       </section>
@@ -118,21 +153,45 @@ export function TripEditorPage() {
   )
 }
 
-function LineRow({
-  line,
-  item,
-  packs,
-  busy,
-  onChange,
-  onRemove,
-}: {
+interface LineProps {
   line: TripItem
   item: Item | undefined
   packs: { id: number; name: string }[]
   busy: boolean
   onChange: (patch: { quantity?: number; packId?: number | null }) => void
   onRemove: () => void
-}) {
+}
+
+function LineCard({ line, item, packs, busy, onChange, onRemove }: LineProps) {
+  if (!item) return null
+  return (
+    <li className="px-3 py-2">
+      <div className="flex items-baseline gap-2">
+        <span className="min-w-0 flex-1 font-medium">
+          {item.name}
+          {item.consumable && <span className="ml-1.5 rounded bg-amber-100 px-1 text-[10px] font-semibold uppercase text-amber-800">cons</span>}
+        </span>
+        <span className="text-sm text-stone-700 tabular-nums">{formatWeight(item.weightG * line.quantity)}</span>
+        <IconButton label="Remove from trip" className="-mr-2 h-7 w-7 self-center hover:text-red-700" disabled={busy} onClick={onRemove}>✕</IconButton>
+      </div>
+      <div className="mt-1 flex items-center gap-2">
+        <div className="flex shrink-0 items-center rounded-md ring-1 ring-stone-200">
+          <IconButton label="Less" className="h-8 w-7" disabled={busy || line.quantity <= 1} onClick={() => onChange({ quantity: line.quantity - 1 })}>−</IconButton>
+          <span className="w-4 text-center text-sm tabular-nums">{line.quantity}</span>
+          <IconButton label="More" className="h-8 w-7" disabled={busy} onClick={() => onChange({ quantity: line.quantity + 1 })}>+</IconButton>
+        </div>
+        <Select className="h-8 min-w-0 flex-1" value={line.packId ?? ''} disabled={busy} onChange={(e) => onChange({ packId: e.target.value ? Number(e.target.value) : null })}>
+          <option value="">— no pack —</option>
+          {packs.map((p) => (
+            <option key={p.id} value={p.id}>{p.name}</option>
+          ))}
+        </Select>
+      </div>
+    </li>
+  )
+}
+
+function LineRow({ line, item, packs, busy, onChange, onRemove }: LineProps) {
   if (!item) return null
   const cell = 'px-3 py-1.5 align-middle'
   return (
@@ -148,7 +207,7 @@ function LineRow({
           <IconButton label="More" className="h-6 w-6" disabled={busy} onClick={() => onChange({ quantity: line.quantity + 1 })}>+</IconButton>
         </div>
       </td>
-      <td className={cx(cell, 'w-72 max-w-[45%]')}>
+      <td className={cx(cell, 'w-72')}>
         <Select className="h-8" value={line.packId ?? ''} disabled={busy} onChange={(e) => onChange({ packId: e.target.value ? Number(e.target.value) : null })}>
           <option value="">— no pack —</option>
           {packs.map((p) => (
