@@ -10,6 +10,7 @@ import { categoryRoutes } from './routes/categories.ts'
 import { itemRoutes } from './routes/items.ts'
 import { packRoutes } from './routes/packs.ts'
 import { transferRoutes } from './routes/transfer.ts'
+import { tripRoutes } from './routes/trips.ts'
 import { importAll, isEmpty } from './transfer.ts'
 
 export interface AppOptions {
@@ -60,6 +61,7 @@ export async function buildApp(opts: AppOptions): Promise<FastifyInstance> {
       await api.register(itemRoutes)
       await api.register(packRoutes)
       await api.register(transferRoutes)
+      await api.register(tripRoutes)
     },
     { prefix: '/api/v1' },
   )

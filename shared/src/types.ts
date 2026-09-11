@@ -45,3 +45,47 @@ export interface TripItem {
   packed: boolean
   sortOrder: number
 }
+
+export interface TripDetail extends Trip {
+  /** Packs in use on this trip, in display order. */
+  packIds: number[]
+  lines: TripItem[]
+}
+
+export interface TripListEntry extends Trip {
+  lineCount: number
+  itemCount: number
+  packedCount: number
+}
+
+export interface CategorySummary {
+  categoryId: number
+  name: string
+  weightG: number
+  itemCount: number
+}
+
+export interface PackSummary {
+  /** null = lines not assigned to any pack */
+  packId: number | null
+  name: string
+  contentsG: number
+  packG: number
+  totalG: number
+  itemCount: number
+}
+
+export interface TripSummary {
+  /** Everything: gear plus the packs in use */
+  totalG: number
+  itemsG: number
+  packsG: number
+  consumableG: number
+  /** total minus consumables */
+  baseG: number
+  lineCount: number
+  itemCount: number
+  packedCount: number
+  byCategory: CategorySummary[]
+  byPack: PackSummary[]
+}
