@@ -60,6 +60,18 @@ export function Dialog({ open, onClose, title, children, wide }: { open: boolean
     if (open && !el.open) el.showModal()
     if (!open && el.open) el.close()
   }, [open])
+  // Escape closes even when focus has left the dialog (e.g. a button got disabled).
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        onClose()
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [open, onClose])
   return (
     <dialog
       ref={ref}
@@ -68,12 +80,6 @@ export function Dialog({ open, onClose, title, children, wide }: { open: boolean
         // Escape: let React state drive the close instead of the native default.
         e.preventDefault()
         onClose()
-      }}
-      onKeyDown={(e) => {
-        if (e.key === 'Escape') {
-          e.preventDefault()
-          onClose()
-        }
       }}
       onClick={(e) => {
         if (e.target === ref.current) onClose()
