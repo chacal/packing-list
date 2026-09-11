@@ -4,7 +4,9 @@ import { formatWeight } from '@packing-list/shared'
 import { Button, EmptyState, ErrorText, Input, Select, Spinner, cx } from '../../components/ui.tsx'
 import { useCategories, useCreateItem, useDeleteItem, useItems, usePacks, useUpdateItem } from '../../lib/queries.ts'
 import { useLocalStorage } from '../../lib/useLocalStorage.ts'
+import { useIsDesktop } from '../../lib/useMediaQuery.ts'
 import { CategoriesDialog } from './CategoriesDialog.tsx'
+import { ItemDialog } from './ItemDialog.tsx'
 import { EditableRow, ItemRow, fromDraft, type ItemDraft } from './ItemRow.tsx'
 import { PacksDialog } from './PacksDialog.tsx'
 import { TransferMenu } from './TransferMenu.tsx'
@@ -24,6 +26,9 @@ export function InventoryPage() {
   const [sort, setSort] = useLocalStorage<{ key: SortKey; dir: 1 | -1 }>('inventory.sort', { key: 'category', dir: 1 })
   const [dialog, setDialog] = useState<'categories' | 'packs' | null>(null)
   const [newDraft, setNewDraft] = useState<ItemDraft | null>(null)
+  // Phones edit through a dialog: null = closed, 'new' = create, Item = edit.
+  const [itemDialog, setItemDialog] = useState<Item | 'new' | null>(null)
+  const isDesktop = useIsDesktop()
 
   const catById = useMemo(() => new Map((categories.data ?? []).map((c) => [c.id, c])), [categories.data])
 
@@ -51,9 +56,15 @@ export function InventoryPage() {
   const th = 'px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-stone-500 select-none'
 
   const startNew = () => {
+    if (!isDesktop) return setItemDialog('new')
     const first = categoryId !== '' ? categoryId : categories.data?.[0]?.id
     if (first === undefined) return
     setNewDraft({ name: '', categoryId: first, weightG: '', consumable: false, notes: '' })
+  }
+
+  const confirmDelete = (item: Item) => {
+    const warn = item.tripCount > 0 ? ` It is used in ${item.tripCount} trip(s) and will be removed from them.` : ''
+    if (confirm(`Delete "${item.name}"?${warn}`)) deleteItem.mutate(item.id, { onSuccess: () => setItemDialog(null) })
   }
 
   if (categories.isPending || items.isPending) return <Spinner />
@@ -78,7 +89,32 @@ export function InventoryPage() {
         </Select>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-stone-200 bg-white">
+      {/* Phone: tappable cards */}
+      <ul className="divide-y divide-stone-100 overflow-hidden rounded-lg border border-stone-200 bg-white md:hidden">
+        {visible.map((item) => (
+          <li key={item.id}>
+            <button type="button" className="flex w-full items-center gap-3 px-3 py-2.5 text-left active:bg-stone-100" onClick={() => setItemDialog(item)}>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate font-medium">{item.name}</span>
+                <span className="mt-0.5 flex items-center gap-1.5 text-xs text-stone-500">
+                  <span className="rounded-full bg-stone-100 px-1.5 py-0.5 text-stone-700">{catById.get(item.categoryId)?.name ?? '—'}</span>
+                  {item.consumable && <span className="rounded bg-amber-100 px-1 font-semibold uppercase text-amber-800">cons</span>}
+                  {item.notes && <span className="truncate">{item.notes}</span>}
+                </span>
+              </span>
+              <span className="text-sm tabular-nums text-stone-700">{formatWeight(item.weightG)}</span>
+              <span className="text-stone-300">›</span>
+            </button>
+          </li>
+        ))}
+        <li className="flex justify-between bg-stone-50 px-3 py-2 text-xs text-stone-600">
+          <span>{visible.length} of {items.data!.length} items</span>
+          <span className="tabular-nums">{formatWeight(total)}</span>
+        </li>
+      </ul>
+
+      {/* Desktop: table with inline editing */}
+      <div className="hidden overflow-x-auto rounded-lg border border-stone-200 bg-white md:block">
         <table className="w-full min-w-[40rem] text-sm">
           <thead className="border-b border-stone-200 bg-stone-50">
             <tr>
@@ -86,7 +122,7 @@ export function InventoryPage() {
               <th className={cx(th, 'cursor-pointer')} onClick={() => toggleSort('category')}>Category{arrow('category')}</th>
               <th className={cx(th, 'cursor-pointer text-right')} onClick={() => toggleSort('weight')}>Weight{arrow('weight')}</th>
               <th className={cx(th, 'text-center')} title="Consumable">Cons.</th>
-              <th className={cx(th, 'hidden md:table-cell')}>Notes</th>
+              <th className={th}>Notes</th>
               <th className={th}></th>
             </tr>
           </thead>
@@ -114,10 +150,7 @@ export function InventoryPage() {
                 item={item}
                 categories={categories.data!}
                 onSave={(input) => updateItem.mutateAsync({ id: item.id, ...input })}
-                onDelete={() => {
-                  const warn = item.tripCount > 0 ? ` It is used in ${item.tripCount} trip(s) and will be removed from them.` : ''
-                  if (confirm(`Delete "${item.name}"?${warn}`)) deleteItem.mutate(item.id)
-                }}
+                onDelete={() => confirmDelete(item)}
               />
             ))}
           </tbody>
@@ -129,16 +162,27 @@ export function InventoryPage() {
             </tr>
           </tfoot>
         </table>
-        {visible.length === 0 && !newDraft && (
-          <div className="p-4"><EmptyState>{items.data!.length === 0 ? 'No gear yet. Add an item or import a JSON file.' : 'Nothing matches the filter.'}</EmptyState></div>
-        )}
       </div>
+      {visible.length === 0 && !newDraft && (
+        <div className="mt-3"><EmptyState>{items.data!.length === 0 ? 'No gear yet. Add an item or import a JSON file.' : 'Nothing matches the filter.'}</EmptyState></div>
+      )}
 
       <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
         <ErrorText error={createItem.error ?? updateItem.error ?? deleteItem.error} />
         <TransferMenu />
       </div>
 
+      <ItemDialog
+        open={itemDialog !== null}
+        onClose={() => setItemDialog(null)}
+        item={itemDialog === 'new' ? null : itemDialog}
+        categories={categories.data!}
+        defaultCategoryId={categoryId !== '' ? categoryId : undefined}
+        busy={createItem.isPending || updateItem.isPending || deleteItem.isPending}
+        error={createItem.error ?? updateItem.error ?? deleteItem.error}
+        onSave={(input) => (itemDialog === 'new' || itemDialog === null ? createItem.mutateAsync(input) : updateItem.mutateAsync({ id: itemDialog.id, ...input }))}
+        onDelete={confirmDelete}
+      />
       <CategoriesDialog open={dialog === 'categories'} onClose={() => setDialog(null)} categories={categories.data!} items={items.data!} />
       <PacksDialog open={dialog === 'packs'} onClose={() => setDialog(null)} packs={packs.data ?? []} items={items.data!} />
     </div>
