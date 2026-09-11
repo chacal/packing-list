@@ -1,4 +1,4 @@
-import { buildApp } from './app.ts'
+import { buildApp, defaultSeedFile } from './app.ts'
 
 const port = Number(process.env.PORT ?? 3000)
 const host = process.env.HOST ?? '0.0.0.0'
@@ -7,6 +7,7 @@ const pretty = process.env.NODE_ENV !== 'production'
 
 const app = await buildApp({
   dbPath,
+  seedFile: process.env.SEED_FILE ?? defaultSeedFile,
   logger: pretty ? { transport: { target: 'pino-pretty' } } : true,
 })
 

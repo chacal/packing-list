@@ -13,6 +13,8 @@ export interface Item {
   notes: string
   createdAt: string
   updatedAt: string
+  /** Number of trips this item appears in. */
+  tripCount: number
 }
 
 export interface Pack {
@@ -22,6 +24,8 @@ export interface Pack {
   itemId: number | null
   /** Own weight of the pack in grams when not linked to an item. */
   weightG: number
+  /** Weight that counts: the linked item's weight, or weightG. */
+  effectiveWeightG: number
 }
 
 export interface Trip {
