@@ -5,18 +5,26 @@ Laptop for editing, phone for packing.
 
 ## Features
 
-- **Inventory**: gear with category, weight, consumable flag and notes. Inline editing,
-  search, filter, sort. Manage categories (rename, reorder) and packs (the bags gear goes
-  into, optionally linked to the inventory item they are made of).
-- **Trips**: pick gear from the inventory into a trip, set quantity and the pack each item
-  goes into, choose which packs are in use. Duplicate trips to start from a previous one.
+- **Inventory**: gear with category, weight, consumable flag and notes. Search, filter by
+  category, sort by column. Inline row editing with a mouse; on phones and other touch
+  devices the list is a tappable card list and editing happens in a dialog. Manage
+  categories (rename, reorder, delete when unused) and packs (the bags gear goes into,
+  optionally linked to the inventory item they are made of). Deleting an item warns how
+  many trips use it.
+- **Trips**: pick gear from the inventory into a trip (click to add, click again to
+  remove), set quantity and the pack each item goes into, choose and order the packs in
+  use. Rename by clicking the title. Duplicate a trip to start from a previous one.
 - **Summary**: weight per category and per pack (contents + bag), total, base weight
-  (minus consumables), consumables.
-- **Packing mode**: phone checklist grouped by category (collecting at home) or by pack
-  (stuffing bags), checkmarks stored on the server, progress per group, hide packed.
-- **Import / export**: JSON. An empty database is seeded with a small sample inventory
-  and trip from `server/seed/seed.json` on first start; replace it with your own gear or
-  import a JSON export. Set `SEED_FILE` to seed from your own file instead.
+  (total minus consumables), consumables, item counts.
+- **Packing mode**: phone checklist grouped by category (collecting gear at home) or by
+  pack (stuffing bags), big tap targets, checkmarks stored on the server so they survive
+  reloads and other devices, progress per group, hide packed, reset. The grouping choice
+  is remembered per device.
+- **Import / export**: JSON export of everything; import either merges by name (updates
+  existing items, adds trips) or replaces the whole database. An empty database is seeded
+  with a small sample inventory and trip from `server/seed/seed.json` on first start;
+  replace it with your own gear or import a JSON export. Set `SEED_FILE` to seed from
+  your own file instead.
 
 ## Development
 
@@ -42,6 +50,7 @@ docker run -p 8200:3000 -v /srv/packing-list:/data packing-list
 | Variable | Default | Meaning |
 | --- | --- | --- |
 | `PORT` | `3000` | HTTP port inside the container |
+| `HOST` | `0.0.0.0` | Listen address |
 | `DB_PATH` | `/data/packinglist.db` | SQLite file (WAL mode) |
 | `SEED_FILE` | bundled `seed.json` | Imported into an empty database at startup |
 | `BACKUP_DIR` | `<db dir>/backup` | Daily `VACUUM INTO` snapshots; `off` disables |
@@ -50,6 +59,24 @@ docker run -p 8200:3000 -v /srv/packing-list:/data packing-list
 The container runs as uid 1000 (`node`), so the mounted directory must be writable by that
 uid. No authentication: meant for a trusted private network. Images are published to
 `ghcr.io/chacal/packing-list` by GitHub Actions on every push to `main`.
+
+## API
+
+JSON under `/api/v1`, no authentication. Bodies are validated with the zod schemas in
+`shared/src/schemas.ts`; validation errors return 400 with the issues, unique-name and
+in-use conflicts return 409.
+
+| Resource | Endpoints |
+| --- | --- |
+| Categories | `GET/POST /categories`, `PATCH/DELETE /categories/:id`, `PUT /categories/order` |
+| Items | `GET /items?q=&categoryId=`, `POST /items`, `GET/PATCH/DELETE /items/:id` |
+| Packs | `GET/POST /packs`, `PATCH/DELETE /packs/:id` |
+| Trips | `GET/POST /trips`, `GET/PATCH/DELETE /trips/:id`, `POST /trips/:id/duplicate`, `PUT /trips/:id/packs`, `POST /trips/:id/reset-packed`, `GET /trips/:id/summary` |
+| Trip lines | `POST /trips/:id/items`, `PATCH/DELETE /trips/:id/items/:lineId` |
+| Transfer | `GET /export`, `POST /import?mode=merge\|replace` |
+| Health | `GET /healthz` |
+
+Trip mutations return the full trip so the client can update its cache without refetching.
 
 ## Design notes
 
