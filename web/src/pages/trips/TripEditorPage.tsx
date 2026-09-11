@@ -141,14 +141,14 @@ function LineRow({
         {item.name}
         {item.consumable && <span className="ml-1.5 rounded bg-amber-100 px-1 text-[10px] font-semibold uppercase text-amber-800" title="Consumable">cons</span>}
       </td>
-      <td className={cx(cell, 'w-24')}>
+      <td className={cx(cell, 'w-20')}>
         <div className="flex items-center gap-0.5">
           <IconButton label="Less" className="h-6 w-6" disabled={busy || line.quantity <= 1} onClick={() => onChange({ quantity: line.quantity - 1 })}>−</IconButton>
           <span className="w-5 text-center tabular-nums">{line.quantity}</span>
           <IconButton label="More" className="h-6 w-6" disabled={busy} onClick={() => onChange({ quantity: line.quantity + 1 })}>+</IconButton>
         </div>
       </td>
-      <td className={cx(cell, 'w-56')}>
+      <td className={cx(cell, 'w-72 max-w-[45%]')}>
         <Select className="h-8" value={line.packId ?? ''} disabled={busy} onChange={(e) => onChange({ packId: e.target.value ? Number(e.target.value) : null })}>
           <option value="">— no pack —</option>
           {packs.map((p) => (
@@ -156,8 +156,8 @@ function LineRow({
           ))}
         </Select>
       </td>
-      <td className={cx(cell, 'w-24 text-right tabular-nums text-stone-700')}>{formatWeight(item.weightG * line.quantity)}</td>
-      <td className={cx(cell, 'w-10 text-right')}>
+      <td className={cx(cell, 'w-16 text-right whitespace-nowrap tabular-nums text-stone-700')}>{formatWeight(item.weightG * line.quantity)}</td>
+      <td className={cx(cell, 'w-8 pl-0 text-right')}>
         <IconButton label="Remove from trip" className="opacity-0 group-hover:opacity-100 pointer-coarse:opacity-100 hover:text-red-700" disabled={busy} onClick={onRemove}>✕</IconButton>
       </td>
     </tr>
