@@ -4,7 +4,7 @@ import { formatWeight } from '@packing-list/shared'
 import { Button, EmptyState, ErrorText, Input, Select, Spinner, cx } from '../../components/ui.tsx'
 import { useCategories, useCreateItem, useDeleteItem, useItems, usePacks, useUpdateItem } from '../../lib/queries.ts'
 import { useLocalStorage } from '../../lib/useLocalStorage.ts'
-import { useIsDesktop } from '../../lib/useMediaQuery.ts'
+import { useIsDesktop, useMediaQuery } from '../../lib/useMediaQuery.ts'
 import { CategoriesDialog } from './CategoriesDialog.tsx'
 import { ItemDialog } from './ItemDialog.tsx'
 import { EditableRow, ItemRow, fromDraft, type ItemDraft } from './ItemRow.tsx'
@@ -29,6 +29,8 @@ export function InventoryPage() {
   // Phones edit through a dialog: null = closed, 'new' = create, Item = edit.
   const [itemDialog, setItemDialog] = useState<Item | 'new' | null>(null)
   const isDesktop = useIsDesktop()
+  // Touch devices (also phones in landscape, which get the table) edit via the dialog.
+  const isTouch = useMediaQuery('(pointer: coarse)')
 
   const catById = useMemo(() => new Map((categories.data ?? []).map((c) => [c.id, c])), [categories.data])
 
@@ -56,7 +58,7 @@ export function InventoryPage() {
   const th = 'px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-stone-500 select-none'
 
   const startNew = () => {
-    if (!isDesktop) return setItemDialog('new')
+    if (!isDesktop || isTouch) return setItemDialog('new')
     const first = categoryId !== '' ? categoryId : categories.data?.[0]?.id
     if (first === undefined) return
     setNewDraft({ name: '', categoryId: first, weightG: '', consumable: false, notes: '' })
@@ -151,6 +153,7 @@ export function InventoryPage() {
                 categories={categories.data!}
                 onSave={(input) => updateItem.mutateAsync({ id: item.id, ...input })}
                 onDelete={() => confirmDelete(item)}
+                onEdit={isTouch ? () => setItemDialog(item) : undefined}
               />
             ))}
           </tbody>

@@ -55,7 +55,7 @@ export function TripsPage() {
                 </div>
                 <div className="mt-2 text-xs text-stone-400">Updated {new Date(t.updatedAt).toLocaleDateString()}</div>
               </Link>
-              <div className="absolute top-2 right-2 flex gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
+              <div className="absolute top-2 right-2 flex gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100 pointer-coarse:opacity-100">
                 <IconButton label="Duplicate" onClick={() => duplicate.mutate(t.id, { onSuccess: (c) => void navigate(`/trips/${c.id}`) })}>⧉</IconButton>
                 <IconButton label="Delete" className="hover:text-red-700" onClick={() => confirm(`Delete trip "${t.name}"?`) && remove.mutate(t.id)}>🗑</IconButton>
               </div>

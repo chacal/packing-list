@@ -101,11 +101,14 @@ export function ItemRow({
   categories,
   onSave,
   onDelete,
+  onEdit,
 }: {
   item: Item
   categories: Category[]
   onSave: (input: ItemInput) => Promise<unknown>
   onDelete: () => void
+  /** When given (touch devices), editing opens this instead of the inline row. */
+  onEdit?: (() => void) | undefined
 }) {
   const [draft, setDraft] = useState<ItemDraft | null>(null)
   const [saving, setSaving] = useState(false)
@@ -134,7 +137,7 @@ export function ItemRow({
   }
 
   return (
-    <tr className="group hover:bg-stone-50" onDoubleClick={() => setDraft(toDraft(item))}>
+    <tr className="group hover:bg-stone-50" onDoubleClick={() => (onEdit ? onEdit() : setDraft(toDraft(item)))} onClick={onEdit}>
       <td className={cx(cell, 'font-medium')}>
         {item.name}
         {item.notes && <div className="text-xs text-stone-500 md:hidden">{item.notes}</div>}
@@ -146,9 +149,9 @@ export function ItemRow({
       <td className={cx(cell, 'text-center text-stone-500')}>{item.consumable ? '✓' : ''}</td>
       <td className={cx(cell, 'hidden max-w-xs truncate text-stone-500 md:table-cell')} title={item.notes}>{item.notes}</td>
       <td className={cx(cell, 'text-right')}>
-        <div className="flex justify-end gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
-          <IconButton label="Edit" onClick={() => setDraft(toDraft(item))}>✎</IconButton>
-          <IconButton label="Delete" onClick={onDelete} className="hover:text-red-700">🗑</IconButton>
+        <div className="flex justify-end gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100 pointer-coarse:opacity-100">
+          <IconButton label="Edit" onClick={(e) => { e.stopPropagation(); onEdit ? onEdit() : setDraft(toDraft(item)) }}>✎</IconButton>
+          <IconButton label="Delete" onClick={(e) => { e.stopPropagation(); onDelete() }} className="hover:text-red-700">🗑</IconButton>
         </div>
       </td>
     </tr>

@@ -158,7 +158,7 @@ function LineRow({
       </td>
       <td className={cx(cell, 'w-24 text-right tabular-nums text-stone-700')}>{formatWeight(item.weightG * line.quantity)}</td>
       <td className={cx(cell, 'w-10 text-right')}>
-        <IconButton label="Remove from trip" className="opacity-0 group-hover:opacity-100 hover:text-red-700" disabled={busy} onClick={onRemove}>✕</IconButton>
+        <IconButton label="Remove from trip" className="opacity-0 group-hover:opacity-100 pointer-coarse:opacity-100 hover:text-red-700" disabled={busy} onClick={onRemove}>✕</IconButton>
       </td>
     </tr>
   )
