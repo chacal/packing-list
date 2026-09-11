@@ -1,4 +1,5 @@
 import { Navigate, NavLink, Route, Routes } from 'react-router'
+import { InventoryPage } from './pages/inventory/InventoryPage.tsx'
 
 function Placeholder({ title }: { title: string }) {
   return (
@@ -24,7 +25,7 @@ export default function App() {
       <main className="mx-auto w-full max-w-6xl flex-1">
         <Routes>
           <Route path="/" element={<Navigate to="/trips" replace />} />
-          <Route path="/inventory" element={<Placeholder title="Inventory" />} />
+          <Route path="/inventory" element={<InventoryPage />} />
           <Route path="/trips" element={<Placeholder title="Trips" />} />
           <Route path="*" element={<Placeholder title="Not found" />} />
         </Routes>
