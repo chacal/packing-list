@@ -1,6 +1,6 @@
 # Packing List
 
-Gear inventory and trip packing lists with weight summaries, replacing a Google Sheet.
+Gear inventory and trip packing lists with weight summaries for hiking and bikepacking.
 Laptop for editing, phone for packing.
 
 ## Features
@@ -14,8 +14,9 @@ Laptop for editing, phone for packing.
   (minus consumables), consumables.
 - **Packing mode**: phone checklist grouped by category (collecting at home) or by pack
   (stuffing bags), checkmarks stored on the server, progress per group, hide packed.
-- **Import / export**: JSON, same shape as the original seed file. An empty database is
-  seeded from `server/seed/seed.json` on first start.
+- **Import / export**: JSON. An empty database is seeded with a small sample inventory
+  and trip from `server/seed/seed.json` on first start; replace it with your own gear or
+  import a JSON export. Set `SEED_FILE` to seed from your own file instead.
 
 ## Development
 

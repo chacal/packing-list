@@ -1,0 +1,548 @@
+{
+  "categories": [
+    {
+      "name": "Shelter",
+      "sortOrder": 0
+    },
+    {
+      "name": "Sleep",
+      "sortOrder": 1
+    },
+    {
+      "name": "Cooking",
+      "sortOrder": 2
+    },
+    {
+      "name": "Clothing",
+      "sortOrder": 3
+    },
+    {
+      "name": "Electronics",
+      "sortOrder": 4
+    },
+    {
+      "name": "Hygiene",
+      "sortOrder": 5
+    },
+    {
+      "name": "Food",
+      "sortOrder": 6
+    },
+    {
+      "name": "Packs",
+      "sortOrder": 7
+    }
+  ],
+  "items": [
+    {
+      "name": "Backpack 58 l",
+      "category": "Packs",
+      "weightGrams": 1300,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Dry bag 13 l",
+      "category": "Packs",
+      "weightGrams": 90,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Hip belt pouch",
+      "category": "Packs",
+      "weightGrams": 45,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Two-person tent",
+      "category": "Shelter",
+      "weightGrams": 1620,
+      "isConsumable": false,
+      "notes": "Body, fly and poles"
+    },
+    {
+      "name": "Tent footprint",
+      "category": "Shelter",
+      "weightGrams": 420,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Tent stakes",
+      "category": "Shelter",
+      "weightGrams": 210,
+      "isConsumable": false,
+      "notes": "10 pcs"
+    },
+    {
+      "name": "Tarp 3 x 3 m",
+      "category": "Shelter",
+      "weightGrams": 470,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Sleeping bag -5 °C",
+      "category": "Sleep",
+      "weightGrams": 1200,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Sleeping pad",
+      "category": "Sleep",
+      "weightGrams": 500,
+      "isConsumable": false,
+      "notes": "Inflatable, R 4.2"
+    },
+    {
+      "name": "Pillow",
+      "category": "Sleep",
+      "weightGrams": 150,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Sit pad",
+      "category": "Sleep",
+      "weightGrams": 20,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Canister stove",
+      "category": "Cooking",
+      "weightGrams": 85,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Pot 900 ml",
+      "category": "Cooking",
+      "weightGrams": 115,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Mug",
+      "category": "Cooking",
+      "weightGrams": 55,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Spork",
+      "category": "Cooking",
+      "weightGrams": 17,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Knife",
+      "category": "Cooking",
+      "weightGrams": 150,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Lighter and matches",
+      "category": "Cooking",
+      "weightGrams": 30,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Water filter",
+      "category": "Cooking",
+      "weightGrams": 155,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Gas canister 230 g",
+      "category": "Cooking",
+      "weightGrams": 390,
+      "isConsumable": true,
+      "notes": "Weight when full"
+    },
+    {
+      "name": "Coffee",
+      "category": "Cooking",
+      "weightGrams": 60,
+      "isConsumable": true,
+      "notes": ""
+    },
+    {
+      "name": "Base layer top",
+      "category": "Clothing",
+      "weightGrams": 200,
+      "isConsumable": false,
+      "notes": "Merino"
+    },
+    {
+      "name": "Base layer bottom",
+      "category": "Clothing",
+      "weightGrams": 170,
+      "isConsumable": false,
+      "notes": "Merino"
+    },
+    {
+      "name": "Fleece",
+      "category": "Clothing",
+      "weightGrams": 300,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Down jacket",
+      "category": "Clothing",
+      "weightGrams": 445,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Rain jacket",
+      "category": "Clothing",
+      "weightGrams": 260,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Rain pants",
+      "category": "Clothing",
+      "weightGrams": 230,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Hiking pants",
+      "category": "Clothing",
+      "weightGrams": 400,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Beanie",
+      "category": "Clothing",
+      "weightGrams": 45,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Gloves",
+      "category": "Clothing",
+      "weightGrams": 60,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Socks",
+      "category": "Clothing",
+      "weightGrams": 50,
+      "isConsumable": false,
+      "notes": "Per pair"
+    },
+    {
+      "name": "Underwear",
+      "category": "Clothing",
+      "weightGrams": 60,
+      "isConsumable": false,
+      "notes": "Per pair"
+    },
+    {
+      "name": "Headlamp",
+      "category": "Electronics",
+      "weightGrams": 80,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Power bank 10 000 mAh",
+      "category": "Electronics",
+      "weightGrams": 170,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Charging cable",
+      "category": "Electronics",
+      "weightGrams": 30,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Phone",
+      "category": "Electronics",
+      "weightGrams": 200,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Toothbrush",
+      "category": "Hygiene",
+      "weightGrams": 20,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Toothpaste",
+      "category": "Hygiene",
+      "weightGrams": 50,
+      "isConsumable": true,
+      "notes": "Travel size"
+    },
+    {
+      "name": "Sunscreen",
+      "category": "Hygiene",
+      "weightGrams": 60,
+      "isConsumable": true,
+      "notes": ""
+    },
+    {
+      "name": "Toilet paper",
+      "category": "Hygiene",
+      "weightGrams": 40,
+      "isConsumable": true,
+      "notes": ""
+    },
+    {
+      "name": "First aid kit",
+      "category": "Hygiene",
+      "weightGrams": 120,
+      "isConsumable": false,
+      "notes": ""
+    },
+    {
+      "name": "Towel",
+      "category": "Hygiene",
+      "weightGrams": 90,
+      "isConsumable": false,
+      "notes": "Microfibre"
+    },
+    {
+      "name": "Water bottle 1 l",
+      "category": "Food",
+      "weightGrams": 40,
+      "isConsumable": false,
+      "notes": "Empty"
+    },
+    {
+      "name": "Trail mix",
+      "category": "Food",
+      "weightGrams": 250,
+      "isConsumable": true,
+      "notes": ""
+    },
+    {
+      "name": "Dehydrated dinner",
+      "category": "Food",
+      "weightGrams": 140,
+      "isConsumable": true,
+      "notes": "Per portion"
+    },
+    {
+      "name": "Oatmeal",
+      "category": "Food",
+      "weightGrams": 80,
+      "isConsumable": true,
+      "notes": "Per portion"
+    }
+  ],
+  "packs": [
+    {
+      "name": "Backpack 58 l",
+      "sourceItem": "Backpack 58 l",
+      "weightGrams": 0
+    },
+    {
+      "name": "Dry bag 13 l",
+      "sourceItem": "Dry bag 13 l",
+      "weightGrams": 0
+    },
+    {
+      "name": "Hip belt pouch",
+      "sourceItem": "Hip belt pouch",
+      "weightGrams": 0
+    },
+    {
+      "name": "Worn / in hands",
+      "sourceItem": null,
+      "weightGrams": 0
+    }
+  ],
+  "packingLists": [
+    {
+      "name": "Weekend hike (sample)",
+      "notes": "Sample trip. Edit or delete it, and replace the sample gear with your own or import a JSON file.",
+      "entries": [
+        {
+          "item": "Two-person tent",
+          "quantity": 1,
+          "pack": "Backpack 58 l"
+        },
+        {
+          "item": "Tent footprint",
+          "quantity": 1,
+          "pack": "Backpack 58 l"
+        },
+        {
+          "item": "Tent stakes",
+          "quantity": 1,
+          "pack": "Backpack 58 l"
+        },
+        {
+          "item": "Sleeping bag -5 °C",
+          "quantity": 1,
+          "pack": "Dry bag 13 l"
+        },
+        {
+          "item": "Sleeping pad",
+          "quantity": 1,
+          "pack": "Backpack 58 l"
+        },
+        {
+          "item": "Pillow",
+          "quantity": 1,
+          "pack": "Dry bag 13 l"
+        },
+        {
+          "item": "Canister stove",
+          "quantity": 1,
+          "pack": "Backpack 58 l"
+        },
+        {
+          "item": "Pot 900 ml",
+          "quantity": 1,
+          "pack": "Backpack 58 l"
+        },
+        {
+          "item": "Mug",
+          "quantity": 1,
+          "pack": "Backpack 58 l"
+        },
+        {
+          "item": "Spork",
+          "quantity": 1,
+          "pack": "Backpack 58 l"
+        },
+        {
+          "item": "Lighter and matches",
+          "quantity": 1,
+          "pack": "Hip belt pouch"
+        },
+        {
+          "item": "Water filter",
+          "quantity": 1,
+          "pack": "Backpack 58 l"
+        },
+        {
+          "item": "Gas canister 230 g",
+          "quantity": 1,
+          "pack": "Backpack 58 l"
+        },
+        {
+          "item": "Coffee",
+          "quantity": 1,
+          "pack": "Backpack 58 l"
+        },
+        {
+          "item": "Base layer top",
+          "quantity": 1,
+          "pack": "Dry bag 13 l"
+        },
+        {
+          "item": "Fleece",
+          "quantity": 1,
+          "pack": "Dry bag 13 l"
+        },
+        {
+          "item": "Down jacket",
+          "quantity": 1,
+          "pack": "Dry bag 13 l"
+        },
+        {
+          "item": "Rain jacket",
+          "quantity": 1,
+          "pack": "Backpack 58 l"
+        },
+        {
+          "item": "Beanie",
+          "quantity": 1,
+          "pack": "Dry bag 13 l"
+        },
+        {
+          "item": "Socks",
+          "quantity": 2,
+          "pack": "Dry bag 13 l"
+        },
+        {
+          "item": "Underwear",
+          "quantity": 2,
+          "pack": "Dry bag 13 l"
+        },
+        {
+          "item": "Headlamp",
+          "quantity": 1,
+          "pack": "Hip belt pouch"
+        },
+        {
+          "item": "Power bank 10 000 mAh",
+          "quantity": 1,
+          "pack": "Backpack 58 l"
+        },
+        {
+          "item": "Charging cable",
+          "quantity": 1,
+          "pack": "Backpack 58 l"
+        },
+        {
+          "item": "Phone",
+          "quantity": 1,
+          "pack": "Worn / in hands"
+        },
+        {
+          "item": "Toothbrush",
+          "quantity": 1,
+          "pack": "Backpack 58 l"
+        },
+        {
+          "item": "Toothpaste",
+          "quantity": 1,
+          "pack": "Backpack 58 l"
+        },
+        {
+          "item": "Toilet paper",
+          "quantity": 1,
+          "pack": "Backpack 58 l"
+        },
+        {
+          "item": "First aid kit",
+          "quantity": 1,
+          "pack": "Backpack 58 l"
+        },
+        {
+          "item": "Water bottle 1 l",
+          "quantity": 1,
+          "pack": "Worn / in hands"
+        },
+        {
+          "item": "Trail mix",
+          "quantity": 1,
+          "pack": "Hip belt pouch"
+        },
+        {
+          "item": "Dehydrated dinner",
+          "quantity": 2,
+          "pack": "Backpack 58 l"
+        },
+        {
+          "item": "Oatmeal",
+          "quantity": 2,
+          "pack": "Backpack 58 l"
+        }
+      ]
+    }
+  ]
+}

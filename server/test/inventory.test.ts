@@ -13,16 +13,16 @@ afterAll(async () => app.close())
 const api = (url: string) => `/api/v1${url}`
 
 describe('seed', () => {
-  it('imports the sheet into an empty database', async () => {
+  it('imports the sample into an empty database', async () => {
     const cats = (await app.inject({ url: api('/categories') })).json() as Category[]
-    expect(cats.map((c) => c.name)).toEqual(['Camping', 'Packs', 'Cooking', 'Clothing', 'Electronics', 'Food', 'Hygiene', 'Misc'])
+    expect(cats.map((c) => c.name)).toEqual(['Shelter', 'Sleep', 'Cooking', 'Clothing', 'Electronics', 'Hygiene', 'Food', 'Packs'])
     const items = (await app.inject({ url: api('/items') })).json() as Item[]
-    expect(items).toHaveLength(108)
+    expect(items).toHaveLength(45)
     const packs = (await app.inject({ url: api('/packs') })).json() as Pack[]
-    expect(packs).toHaveLength(10)
-    const forkPack = packs.find((p) => p.name === 'Ortlieb fork pack (red)')!
-    expect(forkPack.itemId).not.toBeNull()
-    expect(forkPack.effectiveWeightG).toBe(255)
+    expect(packs).toHaveLength(4)
+    const dryBag = packs.find((p) => p.name === 'Dry bag 13 l')!
+    expect(dryBag.itemId).not.toBeNull()
+    expect(dryBag.effectiveWeightG).toBe(90)
     const trips = app.db.prepare('SELECT COUNT(*) AS n FROM trips').get() as { n: number }
     expect(trips.n).toBe(1)
   })
@@ -44,11 +44,11 @@ describe('categories', () => {
     const renamed = await app.inject({ method: 'PATCH', url: api(`/categories/${cat.id}`), payload: { name: 'Angling' } })
     expect((renamed.json() as Category).name).toBe('Angling')
 
-    const dup = await app.inject({ method: 'POST', url: api('/categories'), payload: { name: 'Camping' } })
+    const dup = await app.inject({ method: 'POST', url: api('/categories'), payload: { name: 'Shelter' } })
     expect(dup.statusCode).toBe(409)
 
-    const camping = ((await app.inject({ url: api('/categories') })).json() as Category[]).find((c) => c.name === 'Camping')!
-    const del = await app.inject({ method: 'DELETE', url: api(`/categories/${camping.id}`) })
+    const shelter = ((await app.inject({ url: api('/categories') })).json() as Category[]).find((c) => c.name === 'Shelter')!
+    const del = await app.inject({ method: 'DELETE', url: api(`/categories/${shelter.id}`) })
     expect(del.statusCode).toBe(409)
 
     const all = (await app.inject({ url: api('/categories') })).json() as Category[]
@@ -81,11 +81,11 @@ describe('items', () => {
     const patched = await app.inject({ method: 'PATCH', url: api(`/items/${item.id}`), payload: { weightG: 19, consumable: true } })
     expect(patched.json()).toMatchObject({ weightG: 19, consumable: true, notes: 'long handle' })
 
-    const search = (await app.inject({ url: api('/items?q=spork') })).json() as Item[]
+    const search = (await app.inject({ url: api('/items?q=titanium') })).json() as Item[]
     expect(search.map((i) => i.name)).toEqual(['Titanium spork'])
     const byCat = (await app.inject({ url: api(`/items?categoryId=${cooking.id}`) })).json() as Item[]
     expect(byCat.every((i) => i.categoryId === cooking.id)).toBe(true)
-    expect(byCat.length).toBeGreaterThan(10)
+    expect(byCat.length).toBeGreaterThan(5)
 
     expect((await app.inject({ method: 'DELETE', url: api(`/items/${item.id}`) })).statusCode).toBe(204)
     expect((await app.inject({ url: api(`/items/${item.id}`) })).statusCode).toBe(404)
@@ -93,7 +93,7 @@ describe('items', () => {
 
   it('reports trip usage and cascades deletes into trips', async () => {
     const items = (await app.inject({ url: api('/items') })).json() as Item[]
-    const tarp = items.find((i) => i.name === 'Need for trees tarp + snakeskin')!
+    const tarp = items.find((i) => i.name === 'Two-person tent')!
     expect(tarp.tripCount).toBe(1)
     const before = (app.db.prepare('SELECT COUNT(*) AS n FROM trip_items').get() as { n: number }).n
     await app.inject({ method: 'DELETE', url: api(`/items/${tarp.id}`) })
@@ -110,8 +110,8 @@ describe('packs', () => {
     expect(pack).toMatchObject({ itemId: null, weightG: 40, effectiveWeightG: 40 })
 
     const items = (await app.inject({ url: api('/items') })).json() as Item[]
-    const exos = items.find((i) => i.name === 'Exos 58')!
-    const linked = (await app.inject({ method: 'PATCH', url: api(`/packs/${pack.id}`), payload: { itemId: exos.id } })).json() as Pack
+    const backpack = items.find((i) => i.name === 'Backpack 58 l')!
+    const linked = (await app.inject({ method: 'PATCH', url: api(`/packs/${pack.id}`), payload: { itemId: backpack.id } })).json() as Pack
     expect(linked.effectiveWeightG).toBe(1300)
 
     const unlinked = (await app.inject({ method: 'PATCH', url: api(`/packs/${pack.id}`), payload: { itemId: null } })).json() as Pack
@@ -137,14 +137,14 @@ describe('export / import', () => {
 
   it('merge-import updates existing items by name and rejects unknown references', async () => {
     const items = (await app.inject({ url: api('/items') })).json() as Item[]
-    const puukko = items.find((i) => i.name === 'Puukko')!
+    const knife = items.find((i) => i.name === 'Knife')!
     const res = await app.inject({
       method: 'POST',
       url: api('/import'),
-      payload: { categories: [], items: [{ name: 'Puukko', category: 'Cooking', weightGrams: 155 }], packs: [], packingLists: [] },
+      payload: { categories: [], items: [{ name: 'Knife', category: 'Cooking', weightGrams: 155 }], packs: [], packingLists: [] },
     })
     expect(res.statusCode).toBe(200)
-    expect(((await app.inject({ url: api(`/items/${puukko.id}`) })).json() as Item).weightG).toBe(155)
+    expect(((await app.inject({ url: api(`/items/${knife.id}`) })).json() as Item).weightG).toBe(155)
 
     const bad = await app.inject({
       method: 'POST',
