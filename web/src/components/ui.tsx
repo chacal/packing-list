@@ -64,6 +64,17 @@ export function Dialog({ open, onClose, title, children, wide }: { open: boolean
     <dialog
       ref={ref}
       onClose={onClose}
+      onCancel={(e) => {
+        // Escape: let React state drive the close instead of the native default.
+        e.preventDefault()
+        onClose()
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') {
+          e.preventDefault()
+          onClose()
+        }
+      }}
       onClick={(e) => {
         if (e.target === ref.current) onClose()
       }}
